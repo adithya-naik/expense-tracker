@@ -1,23 +1,30 @@
-import { useState } from 'react';
+import { useState } from "react";
+
+import { loginUser } from "../api/authApi";
 
 function Login() {
-
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    try {
+      const data = await loginUser(formData);
+
+      console.log(data);
+    } catch (error) {
+      console.log(error.response.data);
+    }
   };
 
   return (
@@ -25,7 +32,6 @@ function Login() {
       <h1>Login</h1>
 
       <form onSubmit={handleSubmit}>
-
         <div>
           <label>Email</label>
 
@@ -48,10 +54,7 @@ function Login() {
           />
         </div>
 
-        <button type="submit">
-          Login
-        </button>
-
+        <button type="submit">Login</button>
       </form>
     </div>
   );
