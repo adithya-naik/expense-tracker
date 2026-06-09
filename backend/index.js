@@ -1,8 +1,11 @@
 const express = require('express');
+const authRoutes = require('./routes/auth');
 require('dotenv').config();
 
 const app = express();
 
+// Routes
+app.use('/api/auth', authRoutes);
 
 // Health check
 app.get('/', (req, res) => res.json({ status: 'Expense API running' }));
