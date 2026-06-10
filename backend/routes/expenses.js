@@ -3,12 +3,10 @@ const express = require('express');
 const router = express.Router();
 
 const isAuth = require('../middleware/authMiddleware');
+const { getExpenses, addExpense } = require('../controllers/expenseController');
 
-// test protected expense route
-router.get('/', isAuth, (req, res) => {
-  res.json({
-    message: 'Expense route working'
-  });
-});
+router.get('/', isAuth, getExpenses);
+
+router.post('/', isAuth, addExpense);
 
 module.exports = router;
