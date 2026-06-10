@@ -30,7 +30,32 @@ const addExpense = async (req, res) => {
   });
 };
 
+
+const deleteExpense = async (req, res) => {
+
+  const expenseId = Number(req.params.id);
+
+  const expenseIndex = expenses.findIndex(
+    (expense) => expense.id === expenseId
+  );
+
+  if (expenseIndex === -1) {
+    return res.status(404).json({
+      message: 'Expense not found'
+    });
+  }
+
+  expenses.splice(expenseIndex, 1);
+
+  res.status(200).json({
+    message: 'Expense deleted successfully'
+  });
+};
+
+
+
 module.exports = {
   getExpenses,
-  addExpense
+  addExpense,
+  deleteExpense
 };

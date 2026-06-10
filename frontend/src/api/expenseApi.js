@@ -20,3 +20,19 @@ export const addExpense = async (expenseData) => {
 
   return response.data;
 };
+
+export const getExpenses = async () => {
+
+  const token = localStorage.getItem('token');
+
+  const response = await API.get(
+    '/expenses',
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+
+  return response.data;
+};

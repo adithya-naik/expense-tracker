@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { addExpense } from "../api/expenseApi";
+import { useState, useEffect } from "react";
+
+import { addExpense, getExpenses } from "../api/expenseApi";
+
 function Dashboard() {
   const [formData, setFormData] = useState({
     title: "",
@@ -7,6 +9,25 @@ function Dashboard() {
     category: "",
   });
 
+  const [expenses, setExpenses] = useState([]);
+
+  // fetch all expenses
+  const fetchExpenses = async () => {
+    try {
+      const data = await getExpenses();
+
+      setExpenses(data);
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+    }
+  };
+
+  // load expenses on page load
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
+
+  // handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -14,19 +35,22 @@ function Dashboard() {
     });
   };
 
+  // add expense
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const data = await addExpense(formData);
+      await addExpense(formData);
 
-      console.log(data);
-
+      // reset form
       setFormData({
         title: "",
         amount: "",
         category: "",
       });
+
+      // refresh expenses
+      fetchExpenses();
     } catch (error) {
       console.log(error.response?.data || error.message);
     }
@@ -78,6 +102,26 @@ function Dashboard() {
 
         <button type="submit">Add Expense</button>
       </form>
+
+      <hr />
+
+      <h2>Expense List</h2>
+
+      {expenses.length === 0 ? (
+        <p>No expenses added yet</p>
+      ) : (
+        expenses.map((expense) => (
+          <div key={expense.id}>
+            <h3>{expense.title}</h3>
+
+            <p>Amount: ₹{expense.amount}</p>
+
+            <p>Category: {expense.category}</p>
+
+            <hr />
+          </div>
+        ))
+      )}
     </div>
   );
 }
