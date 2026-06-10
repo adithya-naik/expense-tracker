@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { addExpense } from "../api/expenseApi";
 function Dashboard() {
   const [formData, setFormData] = useState({
     title: "",
@@ -14,10 +14,22 @@ function Dashboard() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    try {
+      const data = await addExpense(formData);
+
+      console.log(data);
+
+      setFormData({
+        title: "",
+        amount: "",
+        category: "",
+      });
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+    }
   };
 
   return (
