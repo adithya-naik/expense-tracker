@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/authApi";
 
 function Login() {
@@ -7,7 +7,7 @@ function Login() {
     email: "",
     password: "",
   });
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,9 +21,11 @@ function Login() {
     try {
       const data = await loginUser(formData);
 
-      console.log(data);
+      localStorage.setItem("token", data.token);
+
+      navigate("/dashboard");
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error.response?.data || error.message);
     }
   };
 

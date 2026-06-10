@@ -1,24 +1,32 @@
-import { useState } from 'react';
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../api/authApi";
 function Register() {
-
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: ''
+    name: "",
+    email: "",
+    password: "",
   });
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    try {
+      const data = await registerUser(formData);
+
+      localStorage.setItem("token", data.token);
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+    }
   };
 
   return (
@@ -26,7 +34,6 @@ function Register() {
       <h1>Register</h1>
 
       <form onSubmit={handleSubmit}>
-
         <div>
           <label>Name</label>
 
@@ -60,10 +67,7 @@ function Register() {
           />
         </div>
 
-        <button type="submit">
-          Register
-        </button>
-
+        <button type="submit">Register</button>
       </form>
     </div>
   );
