@@ -48,7 +48,7 @@ async function initDB() {
         amount DECIMAL(10,2) NOT NULL,
         category VARCHAR(50) NOT NULL,
         description TEXT,
-        date DATE NOT NULL,
+        date DATE NOT NULL DEFAULT (CURRENT_DATE),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )

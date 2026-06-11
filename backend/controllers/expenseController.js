@@ -22,30 +22,26 @@ const addExpense = async (req, res) => {
   try {
     const { title, amount, category, description, date } = req.body;
 
-    if (!title || !amount || !category || !date) {
+    if (!title || !amount || !category) {
       return res.status(400).json({
-        message: 'Title, amount, category and date are required'
+        message: 'Title, amount and category are required'
       });
     }
 
-    const [result] = await db.query(
-      `INSERT INTO expenses
-      (user_id, title, amount, category, description, date)
-      VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        req.user.id,
-        title,
-        amount,
-        category,
-        description || null,
-        date
-      ]
-    );
+    // Dynamic query: if date is provided, insert it; otherwise let MySQL use DEFAULT (CURRENT_DATE)
+    let query, params;
+    if (date) {
+      query = `INSERT INTO expenses (user_id, title, amount, category, description, date)
+               VALUES (?, ?, ?, ?, ?, ?)`;
+      params = [req.user.id, title, amount, category, description || null, date];
+    } else {
+      query = `INSERT INTO expenses (user_id, title, amount, category, description)
+               VALUES (?, ?, ?, ?, ?)`;
+      params = [req.user.id, title, amount, category, description || null];
+    }
+    const [result] = await db.query(query, params);
 
-    const [expense] = await db.query(
-      'SELECT * FROM expenses WHERE id = ?',
-      [result.insertId]
-    );
+    const [expense] = await db.query('SELECT * FROM expenses WHERE id = ?', [result.insertId]);
 
     res.status(201).json({
       message: 'Expense added successfully',
@@ -62,40 +58,30 @@ const addExpense = async (req, res) => {
 // Update expense
 const updateExpense = async (req, res) => {
   try {
-    const expenseId = req.params.id;
+    const expenseId = req.params.id;    const { title, amount, category, description, date } = req.body;
 
-    const { title, amount, category, description, date } = req.body;
-
+    
     const [expenses] = await db.query(
       'SELECT * FROM expenses WHERE id = ? AND user_id = ?',
       [expenseId, req.user.id]
     );
-
     if (expenses.length === 0) {
-      return res.status(404).json({
-        message: 'Expense not found'
-      });
+      return res.status(404).json({ message: 'Expense not found' });
     }
 
-    await db.query(
-      `UPDATE expenses
-       SET title = ?, amount = ?, category = ?, description = ?, date = ?
-       WHERE id = ? AND user_id = ?`,
-      [
-        title,
-        amount,
-        category,
-        description,
-        date,
-        expenseId,
-        req.user.id
-      ]
-    );
+    // Build dynamic SET clause
+    let setClause = 'title = ?, amount = ?, category = ?, description = ?';
+    let params = [title, amount, category, description || null];
 
-    const [updatedExpense] = await db.query(
-      'SELECT * FROM expenses WHERE id = ?',
-      [expenseId]
-    );
+    if (date) {
+      setClause += ', date = ?';
+      params.push(date);
+    }
+
+    params.push(expenseId, req.user.id);
+    await db.query(`UPDATE expenses SET ${setClause} WHERE id = ? AND user_id = ?`, params);
+
+    const [updatedExpense] = await db.query('SELECT * FROM expenses WHERE id = ?', [expenseId]);
 
     res.status(200).json({
       message: 'Expense updated successfully',
