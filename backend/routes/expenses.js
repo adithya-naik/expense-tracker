@@ -7,6 +7,6 @@ const { getExpenses, addExpense, deleteExpense } = require('../controllers/expen
 
 router.get('/', isAuth, getExpenses);
 router.post('/', isAuth, addExpense);
-router.delete('/:id', protect, deleteExpense);
+router.delete('/:id', isAuth, deleteExpense);
 
 module.exports = router;
