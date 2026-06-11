@@ -205,3 +205,210 @@ Expected columns:
 
 ---
 
+
+# Authentication API
+
+This API provides user registration, login, logout, and protected profile access using JWT authentication.
+
+## Base URL
+
+```text
+http://localhost:5000/api/auth
+```
+
+---
+
+# Register User
+
+Creates a new user account.
+
+### Endpoint
+
+```http
+POST /register
+```
+
+### cURL
+
+```bash
+curl -X POST http://localhost:5000/api/auth/register \
+-H "Content-Type: application/json" \
+-d '{
+  "name":"John Doe",
+  "email":"john@example.com",
+  "password":"123456"
+}'
+```
+
+### Sample Response
+
+```json
+{
+  "message": "User registered successfully",
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com"
+  },
+  "token": "JWT_TOKEN"
+}
+```
+
+---
+
+# Login User
+
+Authenticates an existing user and returns a JWT token.
+
+### Endpoint
+
+```http
+POST /login
+```
+
+### cURL
+
+```bash
+curl -X POST http://localhost:5000/api/auth/login \
+-H "Content-Type: application/json" \
+-d '{
+  "email":"john@example.com",
+  "password":"123456"
+}'
+```
+
+### Sample Response
+
+```json
+{
+  "message": "Login successful",
+  "token": "JWT_TOKEN"
+}
+```
+
+---
+
+# Logout User
+
+Logs out the authenticated user.
+
+> Note: Since JWT authentication is stateless, logout is handled on the client side by removing the stored token.
+
+### Endpoint
+
+```http
+POST /logout
+```
+
+### Headers
+
+```http
+Authorization: Bearer JWT_TOKEN
+```
+
+### cURL
+
+```bash
+curl -X POST http://localhost:5000/api/auth/logout \
+-H "Authorization: Bearer JWT_TOKEN"
+```
+
+### Sample Response
+
+```json
+{
+  "message": "Logout successful. Please remove token from client storage."
+}
+```
+
+---
+
+# Get User Profile (Protected Route)
+
+Returns information about the authenticated user.
+
+### Endpoint
+
+```http
+GET /profile
+```
+
+### Headers
+
+```http
+Authorization: Bearer JWT_TOKEN
+```
+
+### cURL
+
+```bash
+curl http://localhost:5000/api/auth/profile \
+-H "Authorization: Bearer JWT_TOKEN"
+```
+
+### Sample Response
+
+```json
+{
+  "message": "Protected route accessed",
+  "user": {
+    "id": 1,
+    "email": "john@example.com",
+    "iat": 1718123456,
+    "exp": 1718728256
+  }
+}
+```
+
+---
+
+# Error Responses
+
+## Missing Token
+
+```json
+{
+  "message": "No token provided"
+}
+```
+
+## Invalid Token
+
+```json
+{
+  "message": "Invalid token"
+}
+```
+
+## Missing Required Fields
+
+```json
+{
+  "message": "All fields are required"
+}
+```
+
+## Invalid Credentials
+
+```json
+{
+  "message": "Invalid credentials"
+}
+```
+
+---
+
+# Authentication Flow
+
+1. Register a new user using `/register`.
+2. Login using `/login`.
+3. Copy the JWT token returned by the login endpoint.
+4. Include the token in the `Authorization` header:
+
+```http
+Authorization: Bearer JWT_TOKEN
+```
+
+5. Access protected endpoints such as `/profile`.
+6. Logout by calling `/logout` and removing the token from client storage.
+

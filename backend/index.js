@@ -10,7 +10,6 @@ const app = express();
 // middlewares
 app.use(express.json());
 app.use(cors());
-
 async function startServer() {
   try {
     // 1. Auto-create database and tables
