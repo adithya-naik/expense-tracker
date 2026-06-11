@@ -103,7 +103,7 @@ Update `DB_PASSWORD` with your actual MySQL root password.
 ## 7. Start the Backend Server
 
 ```bash
-node server.js
+npm run dev
 ```
 
 Expected output:
