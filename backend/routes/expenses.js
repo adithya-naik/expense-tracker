@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const isAuth = require('../middleware/authMiddleware');
+const isAuth = require('../middlewares/authMiddleware');
 const { getExpenses, addExpense, deleteExpense } = require('../controllers/expenseController');
 
 router.get('/', isAuth, getExpenses);
