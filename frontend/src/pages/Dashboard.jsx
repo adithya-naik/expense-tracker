@@ -102,7 +102,7 @@ function Dashboard() {
   };
 
   return (
-    <div>
+      <div className="min-h-screen bg-slate-100 p-6">
       <h1>Expense Dashboard</h1>
       <button>Logout</button>
       <hr />
