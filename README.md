@@ -2,10 +2,10 @@
 
 ## Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/adithya-naik/expense-tracker.git
 ```
 ---
-# # Expense Tracker Backend Setup Guide:
+#  Expense Tracker Backend Setup Guide:
 ## 1. Navigate to Backend Folder
 
 ```bash
@@ -14,21 +14,13 @@ cd backend
 
 ---
 
-## 2. Initialize Node.js Project
-
+## 2. Install packages
 ```bash
-npm init
+npm i
 ```
 
-This creates a `package.json` file for the backend project.
-
+This installes `node_modules` folder for the backend project.
 ---
-
-## 3. Install Required Dependencies
-
-```bash
-npm install express mysql2 bcryptjs jsonwebtoken dotenv cors
-```
 
 ### Package Purpose
 
@@ -136,13 +128,13 @@ cd frontend
 
 ---
 
-## 2. Initialize Node.js Project
+## 2. Install packages
 
 ```bash
-npm init 
+npm i
 ```
 
-This creates a `package.json` file for the backend project.
+This installes all `node_modules` folder for the frontend project.
 
 ---
 
